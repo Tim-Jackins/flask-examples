@@ -1,0 +1,28 @@
+<!doctype html>
+<title>Example 2</title>
+
+<form id="calc">
+	<label>a <input name="a"></label>
+	<span>+</span>
+	<label>b <input name="b"></label>
+	<input type="submit" value="Calculate">
+</form>
+<span>= <span id="result"></span></span>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script>
+		function addSubmit(ev) {
+			ev.preventDefault();
+			$.ajax({
+				method: 'POST',
+				url: {{ url_for('add')|tojson }},
+				data: $(this).serialize()
+			}).done(addShow);
+		}
+
+		function addShow(data) {
+			$('#result').text(data.result);
+		}
+
+		$('#calc').on('submit', addSubmit);
+	</script>
