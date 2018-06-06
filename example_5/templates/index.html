@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<title>Example 5</title>
+
+<h3>Hmm I wonder what this does</h3>
+
+<p>This is the latest output: <span id="latest"></span></p>
+<p>This is all the output:</p>
+<ul id="output"></ul>
+
+<script>
+    var latest = document.getElementById('latest');
+    var output = document.getElementById('output');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '{{ url_for('stream') }}');
+    xhr.send();
+    var position = 0;
+
+    function handleNewData() {
+        var messages = xhr.responseText.split('\n');
+        messages.slice(position, -1).forEach(function(value){
+            latest.textContent = value;
+            var item = document.createElement('li');
+            item.textContent = value;
+            output.appendChild(item);
+        });
+        position = messages.length - 1;
+    }
+
+    var timer;
+    timer = setInterval(function() {
+        handleNewData();
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            clearInterval(timer);
+            latest.textContent = 'Done';
+        }
+    }, 1000);
+</script>
