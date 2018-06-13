@@ -12,11 +12,11 @@ sudo lsof -t -i tcp:80 -s tcp:listen | sudo xargs kill
 
 ## Example 1
 
-This tutorial covers the basic use of flask, serving up html.
+Basic use of flask, serving up html.
 
 ## Example 2
 
-Serves up files
+Serveing up files other than html.
 
 ## Example 3
 
@@ -24,8 +24,12 @@ Examples of human interface plus jinja
 
 ## Example 4
 
-Jquery with flask
+Jquery requests with flask
 
 ## Example 5
 
-Javascript with flask
+Javascript requests with flask
+
+## Example 6
+
+Using sockets for live data updates.
