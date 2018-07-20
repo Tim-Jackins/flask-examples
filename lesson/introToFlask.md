@@ -4,13 +4,15 @@ In the last assignment, we connected our Pi to the internet and used SSH to log 
 
 ![pic](media/preview_002.png)
 
-Try this.  Get your Pi online, open a terminal window, and find your Pi's IP address using.
+Try this. Get your Pi online, open a terminal window, and find your Pi's IP address using.
 
+```bash
 hostname -I
+```
 
 Then go to another computer, open up a web browser, and type in that address into the address bar.
 
-Surprise, surprise, it doesn't work.  That's because you can't just go to any old IP address and expect a connection to be allowed, much less any data to be served in return. Time to learn a super cool module called flask!
+Surprise, surprise, it doesn't work.  That's because you can't just go to any old IP address and expect a connection to be allowed, much less any data to be served in return. Time to learn about super cool framework called flask!
 
 Let's start by opening a terminal and making a folder called `flask`.
 
@@ -25,68 +27,62 @@ cd flask
 nano app.py
 ```
 
-With `app.py` open toss in the following code:
+With `app.py` open, toss in the following code:
 
 ```python
-from flask import Flask, render_template
-
+from flask import Flask
 app = Flask(__name__)
 
-@app.route('/') # This is the default path for the website (eg http://0.0.0.0/)
-def start_page(): # The name of the function doesn't really matter for now
-    return render_template('index.html') # Serves up an html file
+@app.route("/")
+def hello():
+    return "Hello World!"
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+app.run(host='0.0.0.0', port=80)
 ```
 
-(To exit nano Ctrl+O then Ctrl+X)
+(To exit nano type: Ctrl+O then Ctrl+X)
 
-Now, in the same folder as `app.py`, make a folder called `templates` and inside of that folder make a file called `index.html` and toss in in this:
-
-```html
-<html>
-    Hello internet!
-</html>
-```
-
-Ok, You have just made your first web app! Let's open a terminal and run this bad boy! Go to the folder where `app.py` is and run the script. P.S. it will fail.
+Ok, you have just made your first web app! Let's open a terminal and run this bad boy! Go to the folder where `app.py` is, you should already be there, and run the script. P.S. it will fail.
 
 ```bash
 python3 app.py
 ```
 
-We haven't used sudo yet, have we? Somtimes you ask your computer "Hey, do _____" and it says "You're not the boss of me!"  So then you have to tell it "I'm a super user, now do _____." Port 80 is the default port for web traffic and the computer won't let just any script use it. Well, today we have to say "I'm a super user, now run my script."
+We haven't used sudo yet, have we? Sometimes you ask your computer "Hey, do _____" and it says "You're not the boss of me!"  So then you have to tell it "I'm a super user, now do _____." The reasoning for this is as follows: port 80 is the default port for web traffic and the computer won't let just any script use it. Well, you have to say "I'm a super user, now run my script."
 
 ```bash
 sudo python3 app.py
 ```
 
-Congrats. You just made a web page. Go to that other computer and hit refresh or retype the IP address of your Pi. Bam! The browser on that computer just made a request of your Pi and your Pi served up a website!
+Congrats. You just made a web page. Go to that other computer and type the IP address of your Pi. Bam! The browser on that computer just made a request of your Pi and your Pi served up some data!
 
-We're getting there. Next we want to edit our cute little webpage to actually do something by adding another route to our flask app. Open up `app.py` and add this below the first app route.
+We're getting there. Next we want to edit your web app to get information from you as well as send it to you. To do this we are going to import request from flask and edit the `/` route to your flask app. Open up `app.py` and add this.
 
 ```python
-@app.route('/', methods=['POST'])
+from flask import Flask, request
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
 def my_form_post():
-    text = request.form['text']
-    return text
-```
-
-Now open up `index.html`, it's in `flask/templates`, and add this below hello world.
-
-```html
+    if request.method == 'POST':
+        text = request.form['text']
+        return text
+    else:
+        return '''
 <form method="POST">
-    <input name="text">
-    <input type="submit">
-</form>
+Some text: <input name="text">
+<input type="submit">
+</form>'''
+
+app.run(host='0.0.0.0', port=80)
 ```
 
-Now start the script again and go check the result on another computer. If it doesn't work try to figure out why.
+Now start the script again and go check the result on another computer.
 
-Now to complete the assignment. Our goal is to have this little web server interact with the outside world via GPIO.
+Now to complete the assignment. Your goal is to have this little web server interact with the outside world via GPIO.
 
 I hate to just give you the code, so here is an example of how to control GPIO pins in python and you can figure out how to apply it in order to make your app control and LED. Also have a pinout:
+
 ![pinout](media/rpi_zero_header.png)
 
 ```python
@@ -103,6 +99,8 @@ GPIO.output(18, GPIO.LOW)
 
 Two more things and you're done:
 
-1) Add controls for a second LED.
+1. Add web controls, this can be done with above text field or [buttons or a select field](https://www.w3schools.com/html/html_form_input_types.asp). Go nuts do something cool!
 
-2) Spice up the web interface somehow with CSS or images.
+2. Add second LED.
+
+3. Spice up the web interface somehow with [CSS](https://www.w3schools.com/html/html_css.asp) or [images](https://www.google.com/search?q=images&source=lnms&tbm=isch&sa=X&ved=0ahUKEwil6Z2r667cAhUqtlkKHWWjDRUQ_AUICigB&biw=2349&bih=961).
