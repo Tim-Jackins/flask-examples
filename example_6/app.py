@@ -11,7 +11,7 @@ app.config['DEBUG'] = True
 #turn the flask app into a socketio app
 socketio = SocketIO(app)
 
-#random number Generator Thread
+#TSE Thread
 thread = Thread()
 thread_stop_event = Event()
 
